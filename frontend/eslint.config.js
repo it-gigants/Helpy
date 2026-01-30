@@ -40,5 +40,12 @@ export default defineConfig([
         { allowConstantExport: true },
       ],
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
   },
 ])
