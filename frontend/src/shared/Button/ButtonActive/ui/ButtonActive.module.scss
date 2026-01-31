@@ -1,0 +1,41 @@
+.btn {
+    border: none;
+    border-radius: 10px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all .2s linear;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+}
+
+.primary {
+    background-color: #ffdd2d;
+    color: #000;
+}
+
+.secondary {
+    background-color: #eaecee;
+    color: #126df7;
+}
+
+.s {
+    padding: 7px 12px;
+}
+
+.m {
+    padding: 12px 24px;
+}
+
+.l {
+    padding: 20px 30px;
+}
+
+.border {
+    border: 1px solid #d3d6da;
+}
+
+.isLoading {
+    opacity: .5;
+}
