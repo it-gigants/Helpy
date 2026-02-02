@@ -1,7 +1,15 @@
 import type { Preview } from "@storybook/react-vite";
 import '../src/app/styles/index.scss'
+import {ThemeProvider} from "../src/app/providers/ThemeProvider";
 
 const preview: Preview = {
+    decorators: [
+        (Story) => (
+            <ThemeProvider>
+                <Story />
+            </ThemeProvider>
+        ),
+    ],
     parameters: {
         backgrounds: {
             default: 'dark',
