@@ -1,12 +1,12 @@
-import type {Components} from "@mui/material";
+import type { Components } from "@mui/material";
 
-export const button: Components['MuiButton'] = {
+export const button: Components["MuiButton"] = {
     defaultProps: {
-        disableElevation: true
+        disableElevation: true,
     },
     styleOverrides: {
         root: {
-            borderRadius: 10
-        }
-    }
-}
+            borderRadius: 10,
+        },
+    },
+};

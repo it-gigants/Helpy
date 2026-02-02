@@ -10,6 +10,8 @@
       "@/*": ["*"]
     },
     "moduleResolution": "bundler",
-    "module": "ESNext"
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
   }
 }

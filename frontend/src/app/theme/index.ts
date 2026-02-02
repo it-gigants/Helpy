@@ -1,4 +1,4 @@
-import {button} from "./components/button.ts";
+import { button } from "./components/button.ts";
 
 export const components = {
     MuiButton: button,

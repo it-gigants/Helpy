@@ -1,9 +1,9 @@
-import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
-import {theme} from "../theme/components";
-import type {FC} from "react";
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from "@mui/material";
+import { theme } from "../theme/components";
+import type {FC, ReactNode} from "react";
 
 interface ThemeProviderProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => (
@@ -11,5 +11,4 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => (
         <CssBaseline />
         {children}
     </MuiThemeProvider>
-)
-
+);

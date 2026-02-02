@@ -1,3 +1,3 @@
-import {ButtonActive} from "./ui/ButtonActive.tsx";
+import { ButtonActive } from "./ui/ButtonActive.tsx";
 
-export {ButtonActive}
+export { ButtonActive };
