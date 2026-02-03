@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Sidebar } from './Sidebar';
+import { Sidebar } from './Sidebar.tsx';
 import {
     Box,
     List,

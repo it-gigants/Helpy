@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Footer } from './Footer';
+import { Footer } from './Footer.tsx';
 import { TextField, Button, Typography } from '@mui/material';
 
 const meta: Meta<typeof Footer> = {

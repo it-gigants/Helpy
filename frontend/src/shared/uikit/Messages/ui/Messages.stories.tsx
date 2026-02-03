@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Messages } from './Messages';
+import { Messages } from './Messages.tsx';
 
 const meta: Meta<typeof Messages> = {
     title: 'Компоненты/Chat/Messages',

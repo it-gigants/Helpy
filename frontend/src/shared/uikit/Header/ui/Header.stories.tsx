@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Header } from './Header';
+import { Header } from './Header.tsx';
 import { Box, Typography, Button } from '@mui/material';
 
 const meta: Meta<typeof Header> = {
