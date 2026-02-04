@@ -1,0 +1,92 @@
+services:
+  api: &main_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: helpy:${HELPY_VERSION:-latest}
+    restart: always
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      HELPY_HOST: 0.0.0.0
+      HELPY_DB_HOST: helpy-db
+      HELPY_DB_PORT: 5432
+      HELPY_DB_USER: helpy
+      HELPY_DB_PASS: helpy
+      HELPY_DB_BASE: helpy
+      HELPY_REDIS_HOST: helpy-redis
+      TESTKAFKA_KAFKA_BOOTSTRAP_SERVERS: '["helpy-kafka:9092"]'
+
+  db:
+    image: postgres:18.1-bookworm
+    hostname: helpy-db
+    environment:
+      POSTGRES_PASSWORD: "helpy"
+      POSTGRES_USER: "helpy"
+      POSTGRES_DB: "helpy"
+    volumes:
+      - helpy-db-data:/var/lib/postgresql
+    restart: always
+    healthcheck:
+      test: pg_isready -U helpy
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    <<: *main_app
+    restart: "no"
+    command: alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+
+  redis:
+    image: redis:8.4.0
+    hostname: "helpy-redis"
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
+
+  kafka:
+    image: apache/kafka:4.1.1
+    hostname: "helpy-kafka"
+    environment:
+      KAFKA_NODE_ID: "0"
+      KAFKA_PROCESS_ROLES: "controller,broker"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "0@helpy-kafka:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+    # Uncomment it to connect from localhost.
+    # ports:
+    #   - 9094:9094
+    healthcheck:
+      test: /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+
+
+volumes:
+  helpy-db-data:
+    name: helpy-db-data
