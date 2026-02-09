@@ -1,43 +1,40 @@
 import enum
 from pathlib import Path
-from tempfile import gettempdir
 from typing import Literal
-
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
 
-TEMP_DIR = Path(gettempdir())
 
-
-class LogLevel(enum.StrEnum):
-    """Possible log levels."""
-
-    DEBUG = "DEBUG"
-    INFO = "INFO"
-    WARNING = "WARNING"
-    ERROR = "ERROR"
-    FATAL = "FATAL"
+SRC_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = SRC_DIR.parent
+ENV_PATH = BASE_DIR / ".env"
 
 
 class RunConfig(BaseModel):
     """Settings for running the application."""
 
     host: str = "127.0.0.1"
-    """Host to bind the application to."""
     port: int = 8000
-    """Port to bind the application to."""
     workers_count: int = 1
-    """Quantity of workers for uvicorn."""
     reload: bool = False
-    """Enable uvicorn reloading."""
 
 
 class LoggingConfig(BaseModel):
     """Settings related with the logging."""
 
-    level: LogLevel = LogLevel.INFO
-    """Log level for the application."""
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"] = "INFO"
+    serialize: bool = False
+
+
+class AuthJWTConfig(BaseModel):
+    """Settings for JWT authentication."""
+
+    private_key_path: Path = SRC_DIR / "certs" / "jwt-private.pem"
+    public_key_path: Path = SRC_DIR / "certs" / "jwt-public.pem"
+    algorithm: str = "RS256"
+    refresh_token_expire_days: int = 30
+    access_token_expire_minutes: int = 15
 
 
 class DatabaseConfig(BaseModel):
@@ -55,6 +52,13 @@ class DatabaseConfig(BaseModel):
     """Database name."""
     echo: bool = False
     """Enable SQLAlchemy echo mode."""
+    naming_convention: dict[str, str] = {
+        "ix": "ix_%(column_0_label)s",
+        "uq": "uq_%(table_name)s_%(column_0_name)s",
+        "ck": "ck_%(table_name)s_%(constraint_name)s",
+        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)s",
+    }
 
     @property
     def url(self) -> URL:
@@ -123,7 +127,9 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_PATH,
+        extra="ignore",
+        case_sensitive=False,
         env_prefix="HELPY__",
         env_file_encoding="utf-8",
         env_nested_delimiter="__",
