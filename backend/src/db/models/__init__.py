@@ -1,15 +1,19 @@
 """helpy models."""
 
-import pkgutil
-from pathlib import Path
+__all__ = [
+    "Base",
+    "Chat",
+    "Message",
+    "Topic",
+    "User",
+    "OperatorTopic",
+    "RefreshSession",
+]
 
-
-def load_all_models() -> None:
-    """Load all models from this folder."""
-    package_dir = Path(__file__).resolve().parent
-    modules = pkgutil.walk_packages(
-        path=[str(package_dir)],
-        prefix="helpy.db.models.",
-    )
-    for module in modules:
-        __import__(module.name)
+from .base import Base
+from .chat import Chat
+from .message import Message
+from .topic import Topic
+from .user import User
+from .operator_topic import OperatorTopic
+from .refresh_session import RefreshSession

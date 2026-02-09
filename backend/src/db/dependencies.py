@@ -1,20 +1,13 @@
-from collections.abc import AsyncGenerator
+from src.db.db_helper import db_helper
+from src.db.repositories import AuthRepository, UserRepository
+from src.db.unit_of_work import UnitOfWork
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.requests import Request
 
+def get_unit_of_work() -> UnitOfWork:
+    return UnitOfWork(db_helper.session_factory)
 
-async def get_db_session(request: Request) -> AsyncGenerator[AsyncSession]:
-    """
-    Create and get database session.
+def get_auth_repository() -> AuthRepository:
+    return AuthRepository()
 
-    :param request: current request.
-    :yield: database session.
-    """
-    session: AsyncSession = request.app.state.db_session_factory()
-
-    try:
-        yield session
-    finally:
-        await session.commit()
-        await session.close()
+def get_user_repository() -> UserRepository:
+    return UserRepository()
