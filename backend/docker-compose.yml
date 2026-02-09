@@ -4,11 +4,14 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: helpy:${HELPY_VERSION:-latest}
-    restart: always
     env_file:
       - path: .env
         required: false
+    ports:
+      - "8000:8000"
     depends_on:
+      maildev:
+        condition: service_started
       db:
         condition: service_healthy
       redis:
@@ -18,30 +21,46 @@ services:
       migrator:
         condition: service_completed_successfully
     environment:
-      HELPY_HOST: 0.0.0.0
-      HELPY_DB_HOST: helpy-db
-      HELPY_DB_PORT: 5432
-      HELPY_DB_USER: helpy
-      HELPY_DB_PASS: helpy
-      HELPY_DB_BASE: helpy
-      HELPY_REDIS_HOST: helpy-redis
-      TESTKAFKA_KAFKA_BOOTSTRAP_SERVERS: '["helpy-kafka:9092"]'
+      HELPY__RUN__HOST: ${HELPY__RUN__HOST:-0.0.0.0}
+      HELPY__DB__HOST: helpy-db
+      HELPY__DB__PORT: ${HELPY__DB__PORT:-5432}
+      HELPY__DB__USER: ${HELPY__DB__USER:-helpy}
+      HELPY__DB__PASSWORD: ${HELPY__DB__PASSWORD:-helpy}
+      HELPY__DB__BASE: ${HELPY__DB__BASE:-helpy}
+      HELPY__REDIS__HOST: helpy-redis
+      HELPY__KAFKA__BOOTSTRAP_SERVERS: '["helpy-kafka:9092"]'
 
   db:
     image: postgres:18.1-bookworm
     hostname: helpy-db
     environment:
-      POSTGRES_PASSWORD: "helpy"
-      POSTGRES_USER: "helpy"
-      POSTGRES_DB: "helpy"
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-helpy}
+      POSTGRES_USER: ${POSTGRES_USER:-helpy}
+      POSTGRES_DB: ${POSTGRES_DB:-helpy}
     volumes:
       - helpy-db-data:/var/lib/postgresql
     restart: always
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: pg_isready -U helpy
+      test: pg_isready -U ${POSTGRES_USER:-helpy}
       interval: 2s
       timeout: 3s
       retries: 40
+
+  maildev:
+    image: maildev/maildev
+    environment:
+      - TZ=Europe/Moscow
+      - MAILDEV_WEB_PORT=1080
+      - MAILDEV_SMTP_PORT=1025
+    ports:
+      - "8080:1080"
+      - "1025:1025"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
 
   migrator:
     <<: *main_app

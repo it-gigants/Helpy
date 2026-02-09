@@ -1,10 +1,10 @@
 from fastapi.routing import APIRouter
 
-from src.web.api import dummy, echo, kafka, monitoring, redis
+from .monitoring import router as monitoring_router
+from .v1 import router as v1_router
 
 api_router = APIRouter()
-api_router.include_router(monitoring.router)
-api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
-api_router.include_router(dummy.router, prefix="/dummy", tags=["dummy"])
-api_router.include_router(redis.router, prefix="/redis", tags=["redis"])
-api_router.include_router(kafka.router, prefix="/kafka", tags=["kafka"])
+
+api_router.include_router(monitoring_router, tags=["Healthchecks"])
+
+api_router.include_router(v1_router)

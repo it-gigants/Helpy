@@ -2,6 +2,16 @@
 
 This project was generated using fastapi_template.
 
+## Quickstart
+
+```bash
+cd backend
+mkdir src/certs
+cd src/certs
+openssl genrsa -out jwt-private.pem 2048
+openssl rsa -in jwt-private.pem -outform PEM -pubout -out jwt-public.pem
+```
+
 ## UV
 
 This project uses uv. It's a modern dependency management

@@ -18,7 +18,7 @@ repos:
             language: system
             pass_filenames: false
             always_run: true
-            args: ["check", "helpy", "tests", "--fix"]
+            args: ["check", "src", "tests", "--fix"]
 
           - id: mypy
             name: Validate types with MyPy
@@ -27,5 +27,5 @@ repos:
             types: [python]
             pass_filenames: false
             args:
-              - "helpy"
+              - "src"
               - "tests"

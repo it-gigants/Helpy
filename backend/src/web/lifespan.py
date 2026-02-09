@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from src.services.kafka.lifespan import init_kafka, shutdown_kafka
 from src.services.redis.lifespan import init_redis, shutdown_redis
-from src.settings import settings
+from src.core.config import settings
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
@@ -19,7 +19,7 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
 
     :param app: fastAPI application.
     """
-    engine = create_async_engine(str(settings.db_url), echo=settings.db_echo)
+    engine = create_async_engine(str(settings.db.url), echo=settings.db.echo)
     session_factory = async_sessionmaker(
         engine,
         expire_on_commit=False,

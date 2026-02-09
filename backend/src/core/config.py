@@ -1,10 +1,8 @@
-import enum
 from pathlib import Path
 from typing import Literal
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
-
 
 SRC_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = SRC_DIR.parent
@@ -52,6 +50,10 @@ class DatabaseConfig(BaseModel):
     """Database name."""
     echo: bool = False
     """Enable SQLAlchemy echo mode."""
+    pool_size: int = 5
+    """Database connection pool size."""
+    max_overflow: int = 10
+    """Maximum overflow connections."""
     naming_convention: dict[str, str] = {
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -118,6 +120,18 @@ class KafkaConfig(BaseModel):
     """List of Kafka bootstrap servers."""
 
 
+class ApiV1Prefix(BaseModel):
+    """API route prefixes configuration."""
+    prefix: str = "/v1"
+    auth: str = "/auth"
+    """Auth API prefix."""
+
+
+class ApiPrefix(BaseModel):
+    prefix: str = "/api"
+    v1: ApiV1Prefix = ApiV1Prefix()
+
+
 class Settings(BaseSettings):
     """
     Application settings.
@@ -145,8 +159,12 @@ class Settings(BaseSettings):
     """Redis configuration."""
     kafka: KafkaConfig = KafkaConfig()
     """Kafka configuration."""
+    auth_jwt: AuthJWTConfig = AuthJWTConfig()
+    """JWT authentication configuration."""
     environment: str = "dev"
     """Current environment."""
+    api: ApiPrefix = ApiPrefix()
+    """API prefixes configuration."""
 
 
 settings = Settings()

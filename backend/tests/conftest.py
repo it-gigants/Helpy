@@ -21,7 +21,7 @@ from src.db.utils import create_database, drop_database
 from src.services.kafka.dependencies import get_kafka_producer
 from src.services.kafka.lifespan import init_kafka, shutdown_kafka
 from src.services.redis.dependency import get_redis_pool
-from src.settings import settings
+from src.core.config import settings
 from src.web.application import get_app
 
 
@@ -42,14 +42,12 @@ async def _engine(anyio_backend: Any) -> AsyncGenerator[AsyncEngine]:
 
     :yield: new engine.
     """
-    from src.db.meta import meta
-    from src.db.models import load_all_models
-
-    load_all_models()
+    from src.db.models.meta import meta
+    from src.db.models import Base, Chat, Message, Topic, User, OperatorTopic, RefreshSession
 
     await create_database()
 
-    engine = create_async_engine(str(settings.db_url))
+    engine = create_async_engine(str(settings.db.url))
     async with engine.begin() as conn:
         await conn.run_sync(meta.create_all)
 
