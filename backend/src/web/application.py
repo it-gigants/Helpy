@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 
-from src.log import configure_logging
+from src.core.log import configure_logging
 from src.web.api.router import api_router
 from src.web.lifespan import lifespan_setup
+from src.web.middleware import request_handler
 
 
 def get_app() -> FastAPI:
@@ -23,6 +24,9 @@ def get_app() -> FastAPI:
         openapi_url="/api/openapi.json",
         default_response_class=UJSONResponse,
     )
+
+    # Add exception handler middleware
+    app.middleware("http")(request_handler)
 
     # Main router for the API.
     app.include_router(router=api_router, prefix="/api")

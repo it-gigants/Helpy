@@ -3,7 +3,7 @@ import sys
 
 from loguru import logger
 
-from src.settings import settings
+from src.core.config import settings
 
 
 class InterceptHandler(logging.Handler):
@@ -58,5 +58,5 @@ def configure_logging() -> None:  # pragma: no cover
     logger.remove()
     logger.add(
         sys.stdout,
-        level=settings.log_level.value,
+        level=settings.logging.level,
     )

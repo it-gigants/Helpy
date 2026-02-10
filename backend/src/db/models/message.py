@@ -32,5 +32,5 @@ class Message(Base, UUIDPkMixin, TimestampMixin):
 
     # Relationships
     chat: Mapped["Chat"] = relationship(back_populates="messages")
-    sender: Mapped["User"] = relationship(back_populates="messages")
+    sender: Mapped["User"] = relationship()
 

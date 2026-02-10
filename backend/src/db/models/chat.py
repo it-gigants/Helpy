@@ -43,11 +43,9 @@ class Chat(Base, UUIDPkMixin, TimestampMixin):
     # Relationships
     client: Mapped["User"] = relationship(
         foreign_keys=[client_id],
-        back_populates="client_chats",
     )
     operator: Mapped["User | None"] = relationship(
         foreign_keys=[operator_id],
-        back_populates="operator_chats",
     )
     topic: Mapped["Topic"] = relationship(back_populates="chats")
     messages: Mapped[list["Message"]] = relationship(

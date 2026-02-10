@@ -11,3 +11,6 @@ def get_auth_repository() -> AuthRepository:
 
 def get_user_repository() -> UserRepository:
     return UserRepository()
+
+def get_db_session():
+    return db_helper.session_getter()

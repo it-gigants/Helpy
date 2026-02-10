@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from redis.asyncio import ConnectionPool
 
-from src.settings import settings
+from src.core.config import settings
 
 
 def init_redis(app: FastAPI) -> None:  # pragma: no cover
@@ -11,7 +11,7 @@ def init_redis(app: FastAPI) -> None:  # pragma: no cover
     :param app: current fastapi application.
     """
     app.state.redis_pool = ConnectionPool.from_url(
-        str(settings.redis_url),
+        str(settings.redis.url),
     )
 
 

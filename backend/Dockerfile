@@ -29,7 +29,7 @@ RUN --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
-CMD ["/usr/local/bin/python", "-m", "helpy"]
+CMD ["/usr/local/bin/python", "-m", "src"]
 
 # -----------------------------------
 # STAGE 3: development build
@@ -40,3 +40,4 @@ FROM prod AS dev
 RUN --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --all-groups
+
