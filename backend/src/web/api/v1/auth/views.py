@@ -43,6 +43,8 @@ async def login(
         tokens.refresh_token,
         max_age=settings.auth_jwt.refresh_token_expire_days * 60 * 24 * 60,
         httponly=True,
+        secure=True,
+        samesite="lax",
     )
     return tokens
 
@@ -68,6 +70,8 @@ async def register(
         tokens.refresh_token,
         max_age=settings.auth_jwt.refresh_token_expire_days * 60 * 24 * 60,
         httponly=True,
+        secure=True,
+        samesite="lax",
     )
     return tokens
 
@@ -84,6 +88,8 @@ async def refresh_jwt(
         tokens.refresh_token,
         max_age=settings.auth_jwt.refresh_token_expire_days * 24 * 60 * 60,
         httponly=True,
+        secure=True,
+        samesite="lax",
     )
     return tokens
 

@@ -1,8 +1,9 @@
 import jwt
-from jwt import DecodeError
+from jwt import PyJWTError
 from src.core.config import settings
 import bcrypt
 from datetime import datetime, UTC, timedelta
+from src.core.log import logger
 
 from src.core.exceptions.service.auth import InvalidTokenError
 
@@ -36,7 +37,8 @@ def decode_jwt(
             algorithms=[algorithm],
             options={'verify_exp': False}
         )
-    except DecodeError:
+    except PyJWTError:
+        logger.error("Error decoding jwt", exc_info=True)
         raise InvalidTokenError("Error decoding jwt token")
     return decoded_jwt
 

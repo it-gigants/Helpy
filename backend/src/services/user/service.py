@@ -29,6 +29,8 @@ class UserService:
         async with self.uow as uow:
             session = uow.session
             res = await self.repository.get_by_email(session, str(email))
+            if res in None:
+                raise NotFoundError("User not found")
             return UserDTO.model_validate(res)
 
     async def _validate_email(self, email: EmailStr, session: AsyncSession):

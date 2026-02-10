@@ -26,7 +26,7 @@ def generate_link_for_verification(token: str) -> str:
 
 
 def create_token_for_verification(email: str):
-    return encode_jwt({"sub": email}, 3 * 60)
+    return encode_jwt({"sub": email}, 3)
 
 
 async def send_verification_email(
@@ -51,7 +51,7 @@ def verify_verification_token(token: str):
 
 
 def create_token_for_password_reset(email: str):
-    return encode_jwt({"sub": email}, 15 * 60)  # token is valid for 15 minutes
+    return encode_jwt({"sub": email}, 15)  # token is valid for 15 minutes
 
 
 def generate_link_for_password_reset(token: str) -> str:
